@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="NoticeMapper">
+	<resultMap type="Notice" id="NoticeResultMap">
+		<id property="noticeNo" column="NOTICE_NO"/>
+		<result property="noticeTitle" column="NOTICE_TITLE"/>
+		<result property="noticeContent" column="NOTICE_CONTENT"/>
+		<result property="noticeWriter" column="NOTICE_WRITER"/>
+		<result property="nCreateDate" column="N_CREATE_DATE"/>
+		<result property="nUpdateDate" column="N_UPDATE_DATE"/>
+		<result property="noticeFilename" column="NOTICE_FILENAME"/>
+		<result property="noticeFilepath" column="NOTICE_FILEPATH"/>
+	</resultMap>
+	<insert id="insertNotice">
+		INSERT INTO NOTICE_TBL VALUES(SEQ_NOTICENO.NEXTVAL, #{noticeTitle}, #{noticeContent}, #{noticeWriter}, DEFAULT, DEFAULT, #{noticeFilename}, #{noticeFilepath})
+	</insert>
+	<delete id="deleteNotice">
+		DELETE FROM NOTICE_TBL WHERE NOTICE_NO = #{noticeNo}
+	</delete>
+	<select id="selectNoticeList" resultMap="NoticeResultMap">
+		SELECT * FROM NOTICE_TBL 
+	</select>
+	<select id="selectOneById" resultMap="NoticeResultMap">
+		SELECT * FROM NOTICE_TBL WHERE NOTICE_NO = #{noticeNo}
+	</select>
+</mapper>

@@ -16,6 +16,18 @@ public class MemberStoreLogic implements MemberStore{
 	}
 
 	@Override
+	public int updateMember(SqlSession session, Member member) {
+		int result = session.insert("MemberMapper.updateMember", member);
+		return result;
+	}
+
+	@Override
+	public int deleteMember(SqlSession session, String memberId) {
+		int result = session.delete("MemberMapper.deleteMember", memberId);
+		return result;
+	}
+
+	@Override
 	public Member checkMemberLogin(SqlSession session, Member member) {
 		Member mOne = session.selectOne("MemberMapper.checkMemberLogin", member);
 		return mOne;

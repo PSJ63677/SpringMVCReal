@@ -6,9 +6,11 @@
 		<!-- 만약에 null로 데이터가 전달되었으면 빈칸이 아닌 "NULL"로 인식하도록 설정 -->
 	</settings>
 	<typeAliases>
-		<typeAlias type="com.kh.spring.member.domain.Member"/>
+		<typeAlias type="com.kh.spring.member.domain.Member" alias="Member"/>
+		<typeAlias type="com.kh.spring.notice.domain.Notice" alias="Notice"/>
 	</typeAliases>
 	<mappers>
 		<mapper resource="mappers/member-mapper.xml"/>
+		<mapper resource="mappers/notice-mapper.xml"/>
 	</mappers>
 </configuration>

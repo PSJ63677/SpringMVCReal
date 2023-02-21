@@ -15,6 +15,20 @@ public interface MemberStore {
 	public int insertMember(SqlSession session, Member member);
 
 	/**
+	 * 멤버 정보 수정 Store
+	 * @param member
+	 * @return int
+	 */
+	public int updateMember(SqlSession session, Member member);
+	
+	/**
+	 * 멤버 탈퇴 Store
+	 * @param memberId
+	 * @return int
+	 */
+	public int deleteMember(SqlSession session, String memberId);
+	
+	/**
 	 * 멤버 로그인 Store
 	 * @param session
 	 * @param member

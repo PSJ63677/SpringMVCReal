@@ -76,6 +76,39 @@ public class MemberController {
 		}
 	}
 	
+	@RequestMapping(value="/member/modify.kh", method=RequestMethod.POST)
+	public String memberModify(@ModelAttribute Member member, Model model) {
+		try {
+			int result = mService.updateMember(member);
+			if(result > 0 ) {
+				return "redirect:/index.jsp";
+			} else {
+				model.addAttribute("msg", "정보 수정이 완료되지 않았습니다.");
+				return "common/error";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", e.getMessage());
+			return "common/error";
+		}
+	}
+	
+	@RequestMapping(value="/member/out.kh", method=RequestMethod.GET)
+	public String memberRemove(@RequestParam("memberId") String memberId, Model model) {
+		try {
+			int result = mService.deleteMember(memberId);
+			if(result > 0) {
+				return "redirect:/member/logout.kh";
+			} else {
+				model.addAttribute("msg", "회원 탈퇴가 완료되지 않았습니다.");
+				return "common/error";
+			}
+		} catch (Exception e) {
+			model.addAttribute("msg", e.getMessage());
+			return "common/error";
+		}
+	}
+	
 	@RequestMapping(value="/member/login.kh", method=RequestMethod.POST)
 	public String memberLogin(
 			HttpServletRequest request
