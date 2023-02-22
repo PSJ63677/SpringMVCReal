@@ -3,6 +3,7 @@ package com.kh.spring.notice.service;
 import java.util.List;
 
 import com.kh.spring.notice.domain.Notice;
+import com.kh.spring.notice.domain.PageInfo;
 
 public interface NoticeService {
 
@@ -24,7 +25,7 @@ public interface NoticeService {
 	 * 공지사항 목록 조회 Service
 	 * @return List<Notice>
 	 */
-	public List<Notice> selectNoticeList();
+	public List<Notice> selectNoticeList(PageInfo pi);
 
 	/**
 	 * 공지사항 목록 조회 Service
@@ -32,5 +33,11 @@ public interface NoticeService {
 	 * @return Notice
 	 */
 	public Notice selectOneById(int noticeNo);
+
+	/**
+	 * 공지사항 게시물 전체 갯수 Service
+	 * @return int
+	 */
+	public int getListCount();
 
 }

@@ -42,6 +42,16 @@
 				</c:forEach>
 			</tbody>
 			<tfoot>
+				<tr align="center">
+					<td colspan="5">
+						<c:forEach begin="${pi.startNavi }" end="${pi.endNavi }" var="p">
+							<c:url var="pageUrl" value="/notice/list.kh">
+								<c:param name="page" value="${p }"></c:param>
+							</c:url>
+							<a href="${pageUrl }">${p }</a>&nbsp; <!-- 띄어쓰기 -->
+						</c:forEach>
+					</td>
+				</tr>
 				<tr>
 					<td colspan="5">
 						<input type="text" placeholder="검색어를 입력해주세요">

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.spring.notice.domain.Notice;
+import com.kh.spring.notice.domain.PageInfo;
 import com.kh.spring.notice.service.NoticeService;
 import com.kh.spring.notice.store.NoticeStore;
 @Service
@@ -28,8 +29,8 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public List<Notice> selectNoticeList() {
-		List<Notice> nList = nStore.selectNoticeList(session);
+	public List<Notice> selectNoticeList(PageInfo pi) {
+		List<Notice> nList = nStore.selectNoticeList(session, pi);
 		return nList;
 	}
 
@@ -37,6 +38,12 @@ public class NoticeServiceImpl implements NoticeService {
 	public Notice selectOneById(int noticeNo) {
 		Notice notice = nStore.selectOneById(session, noticeNo);
 		return notice;
+	}
+
+	@Override
+	public int getListCount() {
+		int result = nStore.getListCount(session);
+		return result;
 	}
 
 }

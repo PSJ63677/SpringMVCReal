@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSession;
 
 import com.kh.spring.notice.domain.Notice;
+import com.kh.spring.notice.domain.PageInfo;
 
 public interface NoticeStore {
 
@@ -29,7 +30,7 @@ public interface NoticeStore {
 	 * @param session
 	 * @return List<Notice>
 	 */
-	public List<Notice> selectNoticeList(SqlSession session);
+	public List<Notice> selectNoticeList(SqlSession session, PageInfo pi);
 
 	/**
 	 * 
@@ -38,4 +39,11 @@ public interface NoticeStore {
 	 * @return
 	 */
 	public Notice selectOneById(SqlSession session, int noticeNo);
+
+	/**
+	 * 
+	 * @param session
+	 * @return
+	 */
+	public int getListCount(SqlSession session);
 }
