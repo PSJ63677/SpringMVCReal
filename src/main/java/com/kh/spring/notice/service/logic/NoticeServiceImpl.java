@@ -23,6 +23,11 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
+	public int updateNotice(Notice notice) {
+		return nStore.updateNotice(session, notice);
+	}
+
+	@Override
 	public int deleteNotice(int noticeNo) {
 		int result = nStore.deleteNotice(session, noticeNo);
 		return result;

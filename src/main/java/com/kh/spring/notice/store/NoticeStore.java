@@ -18,6 +18,14 @@ public interface NoticeStore {
 	public int insertNotice(SqlSession session, Notice notice);
 
 	/**
+	 * 공지사항 수정Store
+	 * @param session
+	 * @param notice
+	 * @return
+	 */
+	public int updateNotice(SqlSession session, Notice notice);
+
+	/**
 	 * 공지사항 삭제 Store
 	 * @param session
 	 * @param noticeNo

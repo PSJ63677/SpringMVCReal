@@ -61,6 +61,123 @@ public class NoticeController {
 		}
 	}
 	
+	// 공지사항 수정화면
+	@RequestMapping(value="/notice/modifyView.kh", method=RequestMethod.GET)
+	public String noticeModifyView(@RequestParam("noticeNo") Integer noticeNo, Model model) {
+		try {
+			Notice notice = nService.selectOneById(noticeNo);
+			if(notice != null) {
+				model.addAttribute("notice", notice);
+				return "notice/modify";
+			} else {
+				model.addAttribute("msg", "데이터 조회에 실패하였습니다.");
+				return "common/error";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", e.getMessage());
+			return "common/error";
+		}
+	}
+	
+	// 공지사항 수정
+	@RequestMapping(value="/notice/modify.kh", method=RequestMethod.POST)
+	public String noticeModify(@ModelAttribute Notice notice
+				, @RequestParam(value="reloadFile", required=false) MultipartFile reloadFile
+				, Model model
+				, HttpServletRequest request) {
+		try {
+			// 수정할 때 새로 업로드 된 파일이 있는 경우
+			if(!reloadFile.isEmpty()) {
+				// 기존 업로드 된 파일 체크 후
+				if(notice.getNoticeFilename() != null) {
+					// 기존 파일 삭제
+					this.deleteFile(notice.getNoticeFilename(), request);
+				}
+				// 새로 업로드 된 파일 복사(지정된 경로 업로드)
+				String modifyPath = this.saveFile(reloadFile, request);
+				if(modifyPath != null) {
+					// notice에 새로운 파일 이름, 파일 경로set
+					notice.setNoticeFilename(reloadFile.getOriginalFilename());
+					notice.setNoticeFilepath(modifyPath);
+				}
+			}
+			// DB에서 공지사항 수정(UPDATE)
+			int result = nService.updateNotice(notice);
+			if(result > 0) {
+				return "redirect:/notice/detail.kh?noticeNo="+notice.getNoticeNo();
+			} else {
+				model.addAttribute("msg", "공지사항 수정이 완료되지 않았습니다.");
+				return "common/error";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", e.getMessage());
+			return "common/error";
+		}
+	}
+
+	@RequestMapping(value="/notice/remove.kh", method=RequestMethod.GET)
+	public String noticeRemove(@RequestParam("noticeNo") int noticeNo, Model model) {
+		try {
+			int result = nService.deleteNotice(noticeNo);
+			if(result > 0) {
+				return "redirect:/notice/list.kh";
+			} else {
+				model.addAttribute("msg", "삭제가 완료되지 않았습니다.");
+				return "common/error";
+			}
+		} catch (Exception e) {
+			model.addAttribute("msg", e.getMessage());
+			return "common/error";
+		}
+	}
+
+	// 공지사항 목록
+	@RequestMapping(value="/notice/list.kh", method=RequestMethod.GET)
+	public String noticeListView(Model model, @RequestParam(value="page", required=false, defaultValue="1") Integer page) {
+		int totalCount = nService.getListCount();
+		PageInfo pi = this.getPageInfo(page, totalCount);
+		List<Notice> nList = nService.selectNoticeList(pi);
+		model.addAttribute("pi", pi);
+		model.addAttribute("nList", nList);
+		return "notice/list";
+	}
+	
+	// 공지사항 상세
+	@RequestMapping(value="/notice/detail.kh", method=RequestMethod.GET)
+	public String noticeDetailView(@RequestParam("noticeNo") int noticeNo, Model model) {
+		try {
+			Notice notice = nService.selectOneById(noticeNo);
+			model.addAttribute("notice", notice);
+			return "notice/detail";
+		} catch (Exception e) {
+			e.printStackTrace();
+			model.addAttribute("msg", e.getMessage());
+			return "common/error";
+		}
+	}	
+	
+	// navigator start, end값 설정 method()
+	private PageInfo getPageInfo(int currentPage, int totalCount) {
+		PageInfo pi = null;
+		int boardLimit = 10;
+		int naviLimit = 5;
+		int maxPage;
+		int startNavi;
+		int endNavi;
+		
+		maxPage = (int)((double)totalCount/boardLimit+0.9);
+		// Math.ceil((double)totalCount/boardLimit);
+		startNavi = (((int)((double)currentPage/naviLimit+0.9))-1)*naviLimit+1;
+		endNavi = startNavi + naviLimit - 1;
+		if(endNavi > maxPage) {
+			endNavi = maxPage;
+		}
+		pi = new PageInfo(currentPage, boardLimit, naviLimit, startNavi, endNavi, totalCount, maxPage);
+		return pi;
+	}
+
 	// 지정 경로로 파일 업로드(파일 복사)
 	private String saveFile(MultipartFile uploadFile, HttpServletRequest request) {
 		// 내가 원하는 경로 : 프로젝트 경로
@@ -82,65 +199,14 @@ public class NoticeController {
 			return null;
 		}
 	}
-
-	// 공지사항 목록
-	@RequestMapping(value="/notice/list.kh", method=RequestMethod.GET)
-	public String noticeListView(Model model, @RequestParam(value="page", required=false, defaultValue="1") Integer page) {
-		int totalCount = nService.getListCount();
-		PageInfo pi = this.getPageInfo(page, totalCount);
-		List<Notice> nList = nService.selectNoticeList(pi);
-		model.addAttribute("pi", pi);
-		model.addAttribute("nList", nList);
-		return "notice/list";
-	}
 	
-	// navigator start, end값 설정 method()
-	private PageInfo getPageInfo(int currentPage, int totalCount) {
-		PageInfo pi = null;
-		int boardLimit = 10;
-		int naviLimit = 5;
-		int maxPage;
-		int startNavi;
-		int endNavi;
-		
-		maxPage = (int)((double)totalCount/boardLimit+0.9);
-		// Math.ceil((double)totalCount/boardLimit);
-		startNavi = (((int)((double)currentPage/naviLimit+0.9))-1)*naviLimit+1;
-		endNavi = startNavi + naviLimit - 1;
-		if(endNavi > maxPage) {
-			endNavi = maxPage;
-		}
-		pi = new PageInfo(currentPage, boardLimit, naviLimit, startNavi, endNavi, totalCount, maxPage);
-		return pi;
-	}
-	
-	// 공지사항 상세
-	@RequestMapping(value="/notice/detail.kh", method=RequestMethod.GET)
-	public String noticeDetailView(@RequestParam("noticeNo") int noticeNo, Model model) {
-		try {
-			Notice notice = nService.selectOneById(noticeNo);
-			model.addAttribute("notice", notice);
-			return "notice/detail";
-		} catch (Exception e) {
-			e.printStackTrace();
-			model.addAttribute("msg", e.getMessage());
-			return "common/error";
-		}
-	}	
-	
-	@RequestMapping(value="/notice/remove.kh", method=RequestMethod.GET)
-	public String noticeRemove(@RequestParam("noticeNo") int noticeNo, Model model) {
-		try {
-			int result = nService.deleteNotice(noticeNo);
-			if(result > 0) {
-				return "redirect:/notice/list.kh";
-			} else {
-				model.addAttribute("msg", "삭제가 완료되지 않았습니다.");
-				return "common/error";
-			}
-		} catch (Exception e) {
-			model.addAttribute("msg", e.getMessage());
-			return "common/error";
+	private void deleteFile(String filename, HttpServletRequest request) throws Exception {
+		String root = request.getSession().getServletContext().getRealPath("resources");
+		String delPath = root + "\\nuploadFiles";
+		String delFilePath = delPath + "\\" + filename;
+		File delFile = new File(delFilePath);
+		if(delFile.exists()) {
+			delFile.delete();
 		}
 	}
 }
