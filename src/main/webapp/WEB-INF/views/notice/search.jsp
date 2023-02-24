@@ -28,7 +28,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<c:forEach items="${nList }" var="notice" varStatus="i">
+				<c:forEach items="${sList }" var="notice" varStatus="i">
 				<tr>
 					<td>${i.count }</td>
 					<td><a href="/notice/detail.kh?noticeNo=${notice.noticeNo }">${notice.noticeTitle }</a></td>
@@ -45,8 +45,10 @@
 				<tr align="center">
 					<td colspan="5">
 						<c:forEach begin="${pi.startNavi }" end="${pi.endNavi }" var="p">
-							<c:url var="pageUrl" value="/notice/list.kh">
+							<c:url var="pageUrl" value="/notice/search.kh">
 								<c:param name="page" value="${p }"></c:param>
+								<c:param name="searchValue" value="${search.searchValue }"></c:param>
+								<c:param name="searchCondition" value="${search.searchCondition }"></c:param>
 							</c:url>
 							<a href="${pageUrl }">${p }</a>&nbsp; <!-- 띄어쓰기 -->
 						</c:forEach>
@@ -56,12 +58,12 @@
 					<td colspan="4">
 						<form action="/notice/search.kh" method="get">
 							<select name="searchCondition">
-								<option value="all">전체</option>
-								<option value="writer">작성자</option>
-								<option value="title">제목</option>
-								<option value="content">내용</option>
+								<option value="all" <c:if test="${search.searchCondition == 'all'}">selected</c:if>>전체</option>
+								<option value="writer" <c:if test="${search.searchCondition == 'writer'}">selected</c:if>>작성자</option>
+								<option value="title" <c:if test="${search.searchCondition == 'title'}">selected</c:if>>제목</option>
+								<option value="content" <c:if test="${search.searchCondition == 'content'}">selected</c:if>>내용</option>
 							</select>
-							<input type="text" name="searchValue" placeholder="검색어를 입력해주세요">
+							<input type="text" name="searchValue" value="${search.searchValue }" placeholder="검색어를 입력해주세요">
 							<input type="submit" value="검색">
 						</form>
 					</td>

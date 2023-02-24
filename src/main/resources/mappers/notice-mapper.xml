@@ -26,7 +26,34 @@
 	<select id="selectOneById" resultMap="NoticeResultMap">
 		SELECT * FROM NOTICE_TBL WHERE NOTICE_NO = #{noticeNo}
 	</select>
+	<select id="selectListByKeyword" resultMap="NoticeResultMap">
+		SELECT * FROM NOTICE_TBL
+		<if test="searchCondition == 'title'">
+		WHERE NOTICE_TITLE LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition == 'content'">
+		WHERE NOTICE_CONTENT LIKE '%' || #{searchValue} || '%'
+		</if>
+		<if test="searchCondition == 'writer'">
+		WHERE NOTICE_WRITER LIKE '%' || #{searchValue} || '%'
+		</if>
+		ORDER BY N_CREATE_DATE DESC
+	</select>
 	<select id="getListCount" resultType="_int">
 		SELECT COUNT(*) FROM NOTICE_TBL
+	</select>
+	<select id="getSearchListCount" resultType="_int">
+		SELECT COUNT(*) FROM NOTICE_TBL
+		<choose>
+			<when test="searchCondition == 'title'">
+				WHERE NOTICE_TITLE LIKE '%' || #{searchValue} || '%'
+			</when>
+			<when test="searchCondition == 'content'">
+				WHERE NOTICE_CONTENT LIKE '%' || #{searchValue} || '%'
+			</when>
+			<when test="searchCondition == 'writer'">
+				WHERE NOTICE_WRITER LIKE '%' || #{searchValue} || '%'
+			</when>
+		</choose>
 	</select>
 </mapper>

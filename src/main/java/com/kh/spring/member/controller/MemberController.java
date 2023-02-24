@@ -146,6 +146,7 @@ public class MemberController {
 		}
 	}
 	
+	// 마이페이지
 	@RequestMapping(value="/member/mypage.kh", method= {RequestMethod.GET, RequestMethod.POST})
 	public String showMypage(HttpSession session, Model model) {
 		Member mOne = (Member)session.getAttribute("loginUser");
@@ -154,4 +155,14 @@ public class MemberController {
 		model.addAttribute("member", member);
 		return "member/mypage";
 	}
+	
+	// /member/list.kh
+	public String showMembers() {
+		// 1. 페이징 없이 출력
+		// 2. 페이징 처리해서 출력
+		// 3. 검색해서 출력
+		// 4. 검색하고 페이징 처리해서 출력
+		return null;
+	}
+	
 }

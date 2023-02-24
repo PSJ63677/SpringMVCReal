@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.kh.spring.notice.domain.Notice;
 import com.kh.spring.notice.domain.PageInfo;
+import com.kh.spring.notice.domain.Search;
 
 public interface NoticeService {
 
@@ -42,9 +43,24 @@ public interface NoticeService {
 	public Notice selectOneById(int noticeNo);
 
 	/**
+	 * 공지사항 검색 Service
+	 * @param pi 
+	 * @param search
+	 * @return List<Notice>
+	 */
+	public List<Notice> selectListByKeyword(PageInfo pi, Search search);
+
+	/**
 	 * 공지사항 게시물 전체 갯수 Service
 	 * @return int
 	 */
 	public int getListCount();
+	
+	/**
+	 * 공지사항 검색 게시물 전체 갯수 Service
+	 * @param search
+	 * @return
+	 */
+	public int getListCount(Search search);
 
 }
