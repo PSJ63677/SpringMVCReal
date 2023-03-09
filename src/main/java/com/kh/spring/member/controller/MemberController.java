@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.spring.member.domain.Member;
 import com.kh.spring.member.service.MemberService;
@@ -110,11 +111,11 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value="/member/login.kh", method=RequestMethod.POST)
-	public String memberLogin(
+	public ModelAndView memberLogin(		// ① String → ModelAndView
 			HttpServletRequest request
 			, @RequestParam("member-id") String memberId    // request.getParameter을 대신함
 			, @RequestParam("member-pw") String memberPw
-			, Model model) {
+			, ModelAndView mv) {			// ② Model model → ModelAndView mv
 		try {
 //			String memberId = request.getParameter("member-id");
 //			String memberPw = request.getParameter("member-pw");
@@ -123,16 +124,20 @@ public class MemberController {
 			HttpSession session = request.getSession();
 			if(member != null) {
 				session.setAttribute("loginUser", member);
-				return "redirect:/index.jsp";
+				mv.setViewName("redirect:/index.jsp");
+//	③			return "redirect:/index.jsp";
 			} else {
-				model.addAttribute("msg", "로그인 실패");
-				return "common/error";
+				mv.addObject("msg", "로그인 실패").setViewName("common/error");
+//	④			model.addAttribute("msg", "로그인 실패");
+//				return "common/error";
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
-			model.addAttribute("msg", e.getMessage());
-			return "common/error";
-		}				
+			mv.addObject("msg", e.getMessage());
+			mv.setViewName("common/error");
+//			model.addAttribute("msg", e.getMessage());
+//			return "common/error";
+		}
+		return mv;		// ⑤
 	}
 	
 	@RequestMapping(value="/member/logout.kh", method=RequestMethod.GET)

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.kh.spring.notice.domain.Notice;
 import com.kh.spring.notice.domain.PageInfo;
@@ -137,13 +138,13 @@ public class NoticeController {
 
 	// 공지사항 목록
 	@RequestMapping(value="/notice/list.kh", method=RequestMethod.GET)
-	public String noticeListView(Model model, @RequestParam(value="page", required=false, defaultValue="1") Integer page) {
+	public ModelAndView noticeListView(ModelAndView mv
+			, @RequestParam(value="page", required=false, defaultValue="1") Integer page) {
 		int totalCount = nService.getListCount();
 		PageInfo pi = this.getPageInfo(page, totalCount);
 		List<Notice> nList = nService.selectNoticeList(pi);
-		model.addAttribute("pi", pi);
-		model.addAttribute("nList", nList);
-		return "notice/list";
+		mv.addObject("pi", pi).addObject("nList", nList).setViewName("notice/list");
+		return mv;
 	}
 	
 	// 공지사항 상세
